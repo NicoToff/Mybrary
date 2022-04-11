@@ -22,7 +22,7 @@ router.post("/", (req, res) => {
         if (err) {
             res.render("authors/new", {
                 author: author,
-                error: "Error creating author",
+                errorMessage: "Error creating author",
             });
         } else {
             //    res.redirect(`authors/${newAthor.id}`);
