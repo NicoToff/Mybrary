@@ -1,5 +1,4 @@
 const express = require("express");
-const author = require("../models/author");
 const router = express.Router();
 const Author = require("../models/author");
 
@@ -10,9 +9,9 @@ router.get("/", async (req, res) => {
         searchOptions.name = new RegExp(req.query.name, "i");
     }
     try {
-        const allAuthors = await Author.find(searchOptions);
+        const searchedAuthors = await Author.find(searchOptions);
         res.render("authors/index", {
-            authors: allAuthors,
+            authors: searchedAuthors,
             searchOptions: req.query,
         });
     } catch (error) {
