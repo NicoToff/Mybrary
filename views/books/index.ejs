@@ -15,8 +15,4 @@
 
     <button type="submit">Search</button>
 </form>
-<div>
-    <% books.forEach(book => { %>
-        <img height="150" width="100" src="<%= book.coverImagePath %>"> <!-- Virtual variable in the book schema -->
-    <% }); %>
-</div>
+<%- include("../partials/displayBooks") %>

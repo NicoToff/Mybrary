@@ -17,9 +17,21 @@ const upload = multer({
 
 // All books route
 router.get("/", async (req, res) => {
+    let query = Book.find();
+    const inputTitle = req.query.title;
+    const inputPublishedBefore = req.query.publishedBefore; // These are strings :-o
+    const inputPublishedAfter = req.query.publishedAfter;
+    if (inputTitle != null && inputTitle !== "") {
+        query = query.regex("title", new RegExp(inputTitle, "i"));
+    }
+    if (inputPublishedBefore != null && inputPublishedBefore !== "") {
+        query = query.lte("publishDate", inputPublishedBefore);
+    }
+    if (inputPublishedAfter != null && inputPublishedAfter !== "") {
+        query = query.gte("publishDate", inputPublishedAfter);
+    }
     try {
-        const searchedBooks = await Book.find({});
-        console.table(searchedBooks);
+        const searchedBooks = await query.exec();
         res.render("books/index", {
             books: searchedBooks,
             searchOptions: req.query,
@@ -45,10 +57,8 @@ router.post("/", upload.single("cover"), async (req, res) => {
         coverImageName: fileName,
         description: req.body.description,
     });
-    console.log(book);
 
     try {
-        console.log("Saving");
         const newBook = await book.save();
 
         // res.redirect(`authors/${newBook.id}`);

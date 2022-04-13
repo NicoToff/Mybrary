@@ -1,0 +1,7 @@
+<div>
+    <% books.forEach(book => { %>
+        <div style="display: inline;">
+            <img height="150" width="100" src="<%= book.coverImagePath %>"> <% /* Virtual variable in the book schema ! */ %>
+        </div>
+    <% }); %>
+</div>
