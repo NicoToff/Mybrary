@@ -33,13 +33,16 @@ router.post("/", async (req, res) => {
 
     try {
         const newAuthor = await author.save();
-        //    res.redirect(`authors/${newAthor.id}`);
+        // res.redirect(`authors/${newAuthor.id}`);
         res.redirect("authors");
+        console.log(`Author created: ${newAuthor.name}`);
     } catch (error) {
+        const errorText = "Error Creating Author";
         res.render("authors/new", {
             author: author,
-            errorMessage: "Error creating author",
+            errorMessage: errorText,
         });
+        console.error(`[ERROR: ${errorText}] ${error.errors.name.properties.message}`);
     }
 });
 
