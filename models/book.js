@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
 const coverImageBasePath = "upload/bookCovers";
 
@@ -32,6 +33,15 @@ const bookSchema = new mongoose.Schema({
         required: true,
         ref: "Author",
     },
+});
+
+bookSchema.virtual("coverImagePath").get(function () {
+    let coverImageName = this.coverImageName;
+    if (coverImageName != null) {
+        const thePath = path.join("/", coverImageBasePath, coverImageName);
+        //    console.log(thePath);
+        return thePath;
+    }
 });
 
 module.exports = mongoose.model("Book", bookSchema);
