@@ -59,7 +59,7 @@ router.get("/:id", async (req, res) => {
         const foundBook = await Book.findById(req.params.id).populate("author").exec();
         res.render("books/show", { book: foundBook });
     } catch (error) {
-        req.redirect("/");
+        res.redirect("/");
     }
 });
 
