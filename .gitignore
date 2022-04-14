@@ -1,6 +1,5 @@
 node_modules
 .env
-public/upload
 *.docx
 *.tmp
 *.graphml
