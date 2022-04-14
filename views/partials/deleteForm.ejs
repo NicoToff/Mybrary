@@ -1,0 +1,5 @@
+<% /* The DELETE route is taken care of by method-override and needs to be a pseudo-POST request; %>
+<% /* which means we need a <form> and a submit button */ %>
+<form method="POST" action="<%= url %>?_method=DELETE" style="display:inline;">
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
