@@ -46,18 +46,83 @@ router.post("/", async (req, res) => {
     });
     saveCover(book, req.body.cover);
     try {
-        const newBook = await book.save();
-
-        // res.redirect(`authors/${newBook.id}`);
-        res.redirect("/books");
+        await book.save();
+        res.redirect(`books/${book.id}`);
     } catch (error) {
         renderNewPage(res, book, true);
     }
 });
 
-module.exports = router;
+// Show book route
+router.get("/:id", async (req, res) => {
+    try {
+        const foundBook = await Book.findById(req.params.id).populate("author").exec();
+        res.render("books/show", { book: foundBook });
+    } catch (error) {
+        req.redirect("/");
+    }
+});
+
+// Edit book route
+router.get("/:id/edit", async (req, res) => {
+    try {
+        const foundBook = await Book.findById(req.params.id);
+        renderEditPage(res, foundBook);
+    } catch (error) {
+        res.redirect("/");
+    }
+});
+
+// Update book route
+router.put("/:id", async (req, res) => {
+    let book;
+    try {
+        book = await Book.findById(req.params.id);
+        book.title = req.body.title;
+        book.author = req.body.author;
+        book.publishDate = new Date(req.body.publishDate);
+        book.pageCount = req.body.pageCount;
+        book.description = req.body.description;
+        if (req.body.cover != null && req.body.cover !== "") {
+            saveCover(book, req.body.cover);
+        }
+        await book.save();
+        res.redirect(`/books/${book.id}`);
+    } catch (error) {
+        if (book != null) {
+            renderEditPage(res, book, true);
+        }
+    }
+});
+
+// Delete Book route
+router.delete("/:id", async (req, res) => {
+    let book;
+    try {
+        book = await Book.findById(req.params.id);
+        await book.remove();
+        res.redirect("/books");
+    } catch (error) {
+        if (book != null) {
+            res.render("books/show", {
+                book: book,
+                errorMessage: "Could not remove book",
+            });
+        } else {
+            res.redirect("/");
+        }
+    }
+});
 
 async function renderNewPage(res, newBook, hasError = false) {
+    renderFormPage(res, newBook, "new", hasError);
+}
+
+async function renderEditPage(res, newBook, hasError = false) {
+    renderFormPage(res, newBook, "edit", hasError);
+}
+
+async function renderFormPage(res, newBook, form, hasError = false) {
     try {
         const searchedAuthors = await Author.find({});
         const params = {
@@ -65,13 +130,17 @@ async function renderNewPage(res, newBook, hasError = false) {
             book: newBook,
         };
         if (hasError) {
-            params.errorMessage = "Error Creating Book";
+            if (form === "edit") {
+                params.errorMessage = "Error Updating Book";
+            } else {
+                params.errorMessage = "Error Creating Book";
+            }
             // It IS possible to dynamically add a new field to a JS object like this!
         }
-        res.render("books/new", params);
+        res.render(`books/${form}`, params);
     } catch (error) {
         res.redirect("/books");
-        console.error("Error while creating book");
+        console.error("Error while creating book " + error);
     }
 }
 
@@ -84,3 +153,5 @@ function saveCover(book, coverEncoded) {
         book.coverImageType = cover.type;
     }
 }
+
+module.exports = router;

@@ -1,7 +1,9 @@
 <div>
     <% books.forEach(book => { %>
         <div style="display: inline;">
-            <img height="150" width="100" src="<%= book.coverImagePath %>"> <% /* Virtual variable in the book schema ! */ %>
+            <a href="/books/<%= book.id %>">
+                <img height="150" width="100" src="<%= book.coverImagePath %>"> <% /* Virtual variable in the book schema ! */ %>
+            </a>
         </div>
     <% }); %>
 </div>

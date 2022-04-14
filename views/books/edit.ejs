@@ -1,0 +1,10 @@
+<h2>Edit Book</h2>
+<form action="/books/<%= book.id %>?_method=PUT" method="POST"> <% /* enctype="multipart/form-data" <== not necessary anymore, we send a string to the server */%>
+    <%- include("_form_fields") %>
+    <div>
+        <button type="submit" class="btn btn-warning">Update</button>
+        <a href="/books" class="btn btn-danger">Cancel</a>
+    </div>
+</form>
+<%- include("../partials/filePondScripts.ejs") %>
+<script>document.getElementById("books-new-nav-link").classList.add("active")</script>
